@@ -24,7 +24,9 @@ best <- function(state, outcome) {
       mins = tapply(as.numeric(new$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
              new$State, min, na.rm = TRUE, simplify = TRUE)
       lower = mins[state]
-      bests = data[]
+      bests = data[data$State == state & 
+                     new$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure==lower,
+                   "Hospital.Name"]
     }
     else if (identical(outcome,"heart failure")) {
       column = 19
