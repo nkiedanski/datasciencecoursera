@@ -15,14 +15,33 @@ hist(outcome[, 11])
 
 best <- function(state, outcome) {
     ## Check that state and outcome are valid
-    outcome <- read.csv("rprog_data_ProgAssignment3-data/outcome-of-care-measures.csv", 
+    data <- read.csv("rprog_data_ProgAssignment3-data/outcome-of-care-measures.csv", 
                         colClasses = "character")
+    valid_states = levels(as.factor(data$State))
+    
+#    if (!identical(outcome, "heart attack") | !identical(outcome, "heart failure")|
+#        !identical(outcome, "pneumonia")) {
+#      print("invalid outcome")
+#    }
+#    if (!(state %in%valid_states)) {
+#      print("invalid state")
+#    }
     if (identical(outcome,"heart attack")) {
         column = 13
-        lower = min(outcome[[column]])
-        bests = outcome[outcome$State == state & outcome[[column]]==lower, ]
+        lower = min(as.numeric(data[[column]]), na.rm=TRUE)
+        bests = data[data$State == state & data[[column]]==lower, ]
     }
-    bests$Hospital.Name
+    else if (identical(outcome,"heart failure")) {
+      column = 19
+      lower = min(as.numeric(data[[column]]), na.rm=TRUE)
+      bests = data[data$State == state & data[[column]]==lower, ]
+    }
+    else if (identical(outcome,"pneumonia")) {
+      column = 25
+      lower = min(as.numeric(data[[column]]), na.rm=TRUE)
+      bests = data[data$State == state & data[[column]]==lower, ]
+    }
+    bests$Hospital.Name 
 }
 
 best("AZ", "heart attack")
