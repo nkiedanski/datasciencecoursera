@@ -1,15 +1,16 @@
-outcome <- read.csv("rprog_data_ProgAssignment3-data/outcome-of-care-measures.csv", colClasses = "character")
-head(outcome)
-summary(outcome)
-str(outcome)
-ncol(outcome)
-nrow(outcome)
-dim(outcome)
-names(outcome)
-outcome[, 11] <- as.numeric(outcome[, 11])
+data <- read.csv("rprog_data_ProgAssignment3-data/outcome-of-care-measures.csv", 
+                   colClasses = "character")
+head(data)
+summary(data)
+str(data)
+ncol(data)
+nrow(data)
+dim(data)
+names(data)
+data[, 11] <- as.numeric(data[, 11])
 ## You may get a warning about NAs being introduced; that is okay
 #histogram of the 30-day death rates from heart attack
-hist(outcome[, 11])
+hist(data[, 11])
 
 ## 2 Finding the best hospital in a state
 
@@ -19,17 +20,11 @@ best <- function(state, outcome) {
                         colClasses = "character")
     valid_states = levels(as.factor(data$State))
     
-#    if (!identical(outcome, "heart attack") | !identical(outcome, "heart failure")|
-#        !identical(outcome, "pneumonia")) {
-#      print("invalid outcome")
-#    }
-#    if (!(state %in%valid_states)) {
-#      print("invalid state")
-#    }
     if (identical(outcome,"heart attack")) {
-        column = 13
-        lower = min(as.numeric(data[[column]]), na.rm=TRUE)
-        bests = data[data$State == state & data[[column]]==lower, ]
+      mins = tapply(as.numeric(new$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
+             new$State, min, na.rm = TRUE, simplify = TRUE)
+      lower = mins[state]
+      bests = data[]
     }
     else if (identical(outcome,"heart failure")) {
       column = 19
@@ -46,3 +41,12 @@ best <- function(state, outcome) {
 
 best("AZ", "heart attack")
 
+
+
+#    if (!identical(outcome, "heart attack") | !identical(outcome, "heart failure")|
+#        !identical(outcome, "pneumonia")) {
+#      print("invalid outcome")
+#    }
+#    if (!(state %in%valid_states)) {
+#      print("invalid state")
+#    }
