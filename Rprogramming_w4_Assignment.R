@@ -21,24 +21,30 @@ best <- function(state, outcome) {
     valid_states = levels(as.factor(data$State))
     
     if (identical(outcome,"heart attack")) {
-      mins = tapply(as.numeric(new$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
-             new$State, min, na.rm = TRUE, simplify = TRUE)
+      mins = tapply(as.numeric(data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
+             data$State, min, na.rm = TRUE, simplify = TRUE)
       lower = mins[state]
       bests = data[data$State == state & 
-                     new$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure==lower,
+                     data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure==lower,
                    "Hospital.Name"]
     }
     else if (identical(outcome,"heart failure")) {
-      column = 19
-      lower = min(as.numeric(data[[column]]), na.rm=TRUE)
-      bests = data[data$State == state & data[[column]]==lower, ]
+      mins = tapply(as.numeric(data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
+                    data$State, min, na.rm = TRUE, simplify = TRUE)
+      lower = mins[state]
+      bests = data[data$State == state & 
+                     data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure==lower,
+                   "Hospital.Name"]
     }
     else if (identical(outcome,"pneumonia")) {
-      column = 25
-      lower = min(as.numeric(data[[column]]), na.rm=TRUE)
-      bests = data[data$State == state & data[[column]]==lower, ]
+      mins = tapply(as.numeric(data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), 
+                    data$State, min, na.rm = TRUE, simplify = TRUE)
+      lower = mins[state]
+      bests = data[data$State == state & 
+                     data$Lower.Mortality.Estimate...Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia==lower,
+                   "Hospital.Name"]
     }
-    bests$Hospital.Name 
+    bests 
 }
 
 best("AZ", "heart attack")
