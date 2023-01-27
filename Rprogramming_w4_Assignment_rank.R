@@ -17,7 +17,7 @@ rankhospital <- function(state, outcome, num = "best") {
   }
   else if (identical(outcome,"pneumonia")) {
     new_data = data[data$State == state, c(2, as.numeric(23))]
-    order_data = new_data[order(new_data$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, 
+    order_data = new_data[order(as.numeric(new_data$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), 
                                 decreasing = FALSE),]
     
   }
