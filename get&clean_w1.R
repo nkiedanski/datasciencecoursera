@@ -8,6 +8,8 @@ table(data$VAL) #question 1, 53
 
 #question 2:  Tidy data has one variable per column. 
 
+################################################################################
+
 install.packages("readxl")
 library(readxl)
 # fileURL2 = "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FDATA.gov_NGAP.xlsx"
@@ -19,6 +21,7 @@ colnames(dat) = gas_data[17, 7:15]
 sum(as.numeric(dat$Zip)*as.numeric(dat$Ext),na.rm=T)
 # question 3:  36534720
 
+################################################################################
 library(XML)
 fileURL3 = "http://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml"
 doc = xmlTreeParse(fileURL3, useInternalNodes = TRUE)
@@ -27,4 +30,10 @@ rootNode = xmlRoot(doc)
 doc1 = htmlTreeParse(fileURL3, useInternalNodes = TRUE)
 restaurantes = xpathSApply(doc1, "//zipcode", xmlValue)
 sum(restaurantes=="21231")
+# question 4: 127
 
+################################################################################
+
+fileURL5 = "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06pid.csv"
+download.file(fileURL5, destfile = "../datasciencecoursera/microdata.csv")
+DT = fread("../datasciencecoursera/microdata.csv")
