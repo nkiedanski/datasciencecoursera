@@ -32,25 +32,46 @@ data_educational = read.csv("../datasciencecoursera/educational.csv", sep = ",",
 
 intersect(data_product$X, data_educational$CountryCode)
 str(intersect(data_product$X, data_educational$CountryCode))
-# cantidad de matches son 224
+# cantidad de interseccion son 224
+str((match(data_educational$CountryCode, data_product$X)))
+# cantidad de matches son 234
 
 merged_data = merge(data_educational, data_product, by.x = "CountryCode", by.y = "X")
 
 merged_data = merged_data[order(as.numeric(merged_data$Gross.domestic.product.2012), 
                                 decreasing = TRUE),]
-merged_data[13, "Long.Name"]
 
+# hay que poner NA a las celdas que no tienen nada
+merged_data$Gross.domestic.product.2012 = na_if(merged_data$Gross.domestic.product.2012, '')
+# se eliminan los valores NA
+merged_data_na = merged_data[!is.na(merged_data$Gross.domestic.product.2012),]
+
+merged_data_na[13, "Long.Name"]
 # 13th position = "St. Kitts and Nevis"
+
 
 ################################################################################
 
 library(dplyr)
 library(reshape2)
-dcast(merged_data, merged_data$Income.Group ~ mean(merged_data$Gross.domestic.product.2012, 
+dcast(merged_data_na, merged_data_na$Income.Group ~ mean(merged_data_na$Gross.domestic.product.2012, 
                                                    na.rm = TRUE))
 
-# question 4: 30, 37
+# question 4: 23, 30
 
 ################################################################################
 
+quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+         probs = c(0.2, 0.4, 0.6, 0.8, 1.0), na.rm = TRUE)
 
+cut(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+    breaks = quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+                      probs = c(0.2, 0.4, 0.6, 0.8, 1.0), na.rm = TRUE))
+
+x = cut(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+        breaks = quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+                          probs = c(0.2, 0.4, 0.6, 0.8, 1.0)))
+
+table(x, merged_data_na$Income.Group)
+
+# question 5: 13
