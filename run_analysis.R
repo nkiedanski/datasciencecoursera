@@ -29,7 +29,27 @@ merged = rbind.data.frame(merged_test, merged_train)
 mean_index = grep("mean", names(merged))
 std_index = grep("std", names(merged))
 
-merged_filtered = merged[, c(mean_index, std_index)]
+merged_filtered = merged[, c(1, 2, mean_index, std_index)]
 
 
+# Appropriately labels the data set with descriptive variable names. 
+labels = read.table("../datasciencecoursera/UCI HAR Dataset/activity_labels.txt")
 
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "1"] = "WALKING"
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "2"] = "WALKING_UPSTAIRS"
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "3"] = "WALKING_DOWNSTAIRS"
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "4"] = "SITTING"
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "5"] = "STANDING"
+merged_filtered["activity_labels"][merged_filtered["activity_labels"] == "6"] = "LAYING"
+
+
+################################################################################
+
+# for the independant dataset
+
+library(dplyr)
+second = merged_filtered %>% group_by(subject_id, activity_labels) %>% 
+  summarise(across(everything(), mean))
+
+
+second_df = second %>% as.data.frame()
