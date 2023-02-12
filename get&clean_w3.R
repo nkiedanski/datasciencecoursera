@@ -27,26 +27,28 @@ fileURL3 = "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Count
 download.file(fileURL2, destfile = "../datasciencecoursera/product.csv")
 download.file(fileURL3, destfile = "../datasciencecoursera/educational.csv")
 
-data_product = read.csv("../datasciencecoursera/product.csv", sep = ",", header = TRUE)
+data_product = read.csv("../datasciencecoursera/product.csv", sep = ",", header = TRUE, skip = 4)
 data_educational = read.csv("../datasciencecoursera/educational.csv", sep = ",", header = TRUE)
 
-intersect(data_product$X, data_educational$CountryCode)
-str(intersect(data_product$X, data_educational$CountryCode))
-# cantidad de interseccion son 224
-str((match(data_educational$CountryCode, data_product$X)))
-# cantidad de matches son 234
+library(eeptools)
+data_product_clean = data_product[1:190, ]
+data_product_clean$X.4 = decomma(data_product_clean$X.4)
 
-merged_data = merge(data_educational, data_product, by.x = "CountryCode", by.y = "X")
+intersect(data_product_clean$X, data_educational$CountryCode)
+str(intersect(data_product_clean$X, data_educational$CountryCode))
+# cantidad de interseccion es 189
 
-merged_data = merged_data[order(as.numeric(merged_data$Gross.domestic.product.2012), 
-                                decreasing = TRUE),]
+
+merged_data = merge(data_educational, data_product_clean, by.x = "CountryCode", by.y = "X")
+
+merged_data = merged_data[order(merged_data$X.4, decreasing = FALSE),]
 
 # hay que poner NA a las celdas que no tienen nada
-merged_data$Gross.domestic.product.2012 = na_if(merged_data$Gross.domestic.product.2012, '')
+#merged_data$Gross.domestic.product.2012 = na_if(merged_data$Gross.domestic.product.2012, '')
 # se eliminan los valores NA
-merged_data_na = merged_data[!is.na(merged_data$Gross.domestic.product.2012),]
+#merged_data_na = merged_data[!is.na(merged_data$Gross.domestic.product.2012),]
 
-merged_data_na[13, "Long.Name"]
+merged_data[13, "Long.Name"]
 # 13th position = "St. Kitts and Nevis"
 
 
@@ -54,24 +56,29 @@ merged_data_na[13, "Long.Name"]
 
 library(dplyr)
 library(reshape2)
-dcast(merged_data_na, merged_data_na$Income.Group ~ mean(merged_data_na$Gross.domestic.product.2012, 
-                                                   na.rm = TRUE))
+# dcast(merged_data, merged_data$Income.Group ~ mean(as.numeric(merged_data$X.1)))
 
-# question 4: 23, 30
+merged_data %>% group_by(Income.Group) %>% summarise(avg = mean(rank))
+
+# question 4: 91.9 33.0
 
 ################################################################################
 
-quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
+quantile(as.numeric(merged_data$X.4), 
          probs = c(0.2, 0.4, 0.6, 0.8, 1.0), na.rm = TRUE)
 
 cut(as.numeric(merged_data_na$Gross.domestic.product.2012), 
     breaks = quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
                       probs = c(0.2, 0.4, 0.6, 0.8, 1.0), na.rm = TRUE))
 
-x = cut(as.numeric(merged_data_na$Gross.domestic.product.2012), 
-        breaks = quantile(as.numeric(merged_data_na$Gross.domestic.product.2012), 
-                          probs = c(0.2, 0.4, 0.6, 0.8, 1.0)))
+x = cut(as.numeric(merged_data$X.4), 
+        breaks = quantile(as.numeric(merged_data$X.4), 
+                          probs = c(0.2, 0.4, 0.6, 0.8, 1.0), na.rm = TRUE))
 
-table(x, merged_data_na$Income.Group)
+table(x, merged_data$Income.Group)
 
-# question 5: 13
+# question 5: 5
+
+
+
+
